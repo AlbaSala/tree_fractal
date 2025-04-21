@@ -6,12 +6,14 @@ public class FractalTree {
 
     private double angle; // angle between branches
 
-    private final double maxDepth = 16; // maximum depth of the tree
-    private final double maxThickness = 12; // maximum thickness of branches
+    private final double maxDepth; // maximum depth of the tree
+    private final double maxThickness; // maximum thickness of branches
 
-    public FractalTree(double angle) {
-        // Initialize the angle for the fractal tree
+    public FractalTree(double angle, double maxDepth, double maxThickness) {
+        // Constructor to initialize the fractal tree with a specific angle, max depth, and max thickness
         this.angle = angle;
+        this.maxDepth = maxDepth;
+        this.maxThickness = maxThickness;
     }
 
     public void setAngle(double angle) {
