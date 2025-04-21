@@ -6,6 +6,9 @@ public class FractalTree {
 
     private double angle; // angle between branches
 
+    private final double maxDepth = 16; // maximum depth of the tree
+    private final double maxThickness = 12; // maximum thickness of branches
+
     public FractalTree(double angle) {
         // Initialize the angle for the fractal tree
         this.angle = angle;
@@ -20,7 +23,7 @@ public class FractalTree {
 
     public void draw(GraphicsContext gc, double startX, double startY, int depth) {
         // Draw the fractal tree starting from the given coordinates and depth
-        gc.setStroke(Color.BLACK);
+        //gc.setStroke(Color.BLACK);
         drawBranch(gc, startX, startY, -90, depth); // Start drawing from the top pointing downwards
     }
 
@@ -28,9 +31,19 @@ public class FractalTree {
         if (depth == 0) return; // Base case: stop recursion when depth is 0
 
         double rad = Math.toRadians(angleDeg); // Convert angle to radians
+
         // Calculate the end point of the branch
         double x2 = x1 + Math.cos(rad) * depth * 10; 
-        double y2 = y1 + Math.sin(rad) * depth * 10; 
+        double y2 = y1 + Math.sin(rad) * depth * 10;
+        
+        // Gradient color from brown to green based on depth
+        double t = depth / maxDepth;
+        Color branchColor = Color.BROWN.interpolate(Color.FORESTGREEN, 1 - t); // Interpolate color based on depth
+        gc.setStroke(branchColor);
+
+        // Vary thickness based on depth
+        double thickness = (t * maxThickness) + 1; // Ensure minimum thickness of 1
+        gc.setLineWidth(thickness);
 
         gc.strokeLine(x1, y1, x2, y2); 
 
