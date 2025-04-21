@@ -24,7 +24,7 @@ import javafx.util.Duration; // for specifying time durations
 
 public class FractalTreeApp extends Application {
     // Constants for the canvas size
-    private static final int WIDTH = 900;
+    private static final int WIDTH = 1500;
     private static final int HEIGHT = 700;
 
     // Default values for depth and angle
@@ -44,7 +44,7 @@ public class FractalTreeApp extends Application {
         final GraphicsContext gc = canvas.getGraphicsContext2D(); // Get the graphics context for drawing
 
         // Initialize the FractalTree with the default angle
-        fractalTree = new FractalTree(angle);
+        fractalTree = new FractalTree(angle, depth, 10);
 
         final TextField depthField = new TextField(Integer.toString(depth)); // TextField for depth input
         depthField.setPrefWidth(60);  // Set preferred width for the TextField
@@ -69,8 +69,8 @@ public class FractalTreeApp extends Application {
                     angle = newAngle;
 
                     //fractalTree.setAngle(angle);
-                    // Create a new FractalTree instance with the new angle, just trying not to use setters:
-                    fractalTree = new FractalTree(angle); 
+                    // Create a new FractalTree instance with the new angle, trying not to use setters:
+                    fractalTree = new FractalTree(angle, depth, 10); 
                     redraw(gc, depth);
                 } catch (NumberFormatException ex) {
                     System.out.println("Invalid input. Please enter numbers."); // Handle invalid input
@@ -94,8 +94,12 @@ public class FractalTreeApp extends Application {
                         System.out.println("Angle must be between 0 and 90 degrees."); // Validate angle input
                         return;
                     }
+                    
+                    double progress = (double) currentDepth / targetDepth; 
+                    double dynamicThickness = 10 * progress;
+
                     //fractalTree.setAngle(newAngle);
-                    fractalTree = new FractalTree(angle); // Setters aren't cool
+                    fractalTree = new FractalTree(angle, targetDepth, dynamicThickness); // Setters aren't cool
                     currentDepth = 1;
 
                     if (growthAnimation != null) {
@@ -110,6 +114,12 @@ public class FractalTreeApp extends Application {
                         @Override
                         public void handle(ActionEvent e) {
                             if (currentDepth <= targetDepth) {
+                                double progress = (double) currentDepth / targetDepth;
+                                double dynamicThickness = 10 * progress;
+
+                                // Create a new FractalTree for this animation frame
+                                fractalTree = new FractalTree(newAngle, targetDepth, dynamicThickness);
+
                                 // Redraw the fractal tree with the current depth
                                 redraw(gc, currentDepth);
                                 currentDepth++;
@@ -142,7 +152,7 @@ public class FractalTreeApp extends Application {
         root.setBottom(controls); // Set the controls at the bottom of the layout
 
         Scene scene = new Scene(root, WIDTH, HEIGHT); // Create a scene with the specified width and height
-        primaryStage.setTitle("Fractal Tree Growth");
+        primaryStage.setTitle("Fractal Tree");
         primaryStage.setScene(scene);
         primaryStage.show();
 
